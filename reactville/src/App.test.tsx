@@ -42,8 +42,10 @@ test("renders the 5-day forecast", () => {
 test("renders each div contains `conditions:` and `time:`", () => {
   const { container } = render(<App />); // need to get the screen
   const weatherDivs = container.querySelectorAll("div.weather"); //divs
+
   weatherDivs.forEach((div) => {
-    const utils = within(div);
+    const htmlDiv = div as HTMLElement; //type assertion is ok for testing
+    const utils = within(htmlDiv);
     expect(utils.getByText(/conditions:/i)).toBeInTheDocument();
     expect(utils.getByText(/time:/i)).toBeInTheDocument();
   });
@@ -53,6 +55,7 @@ test("renders if some conditions are cloudy vs. time is night", () => {
   const { container } = render(<App />); // need to get the screen
   const weatherDivs = container.querySelectorAll("div.weather"); //divs
 
+  // found this method of testing but feels a bit weird ot me
   const hasCloudyOrNight = Array.from(weatherDivs).some((div) => {
     const text = div.textContent?.toLowerCase() || "";
     return text.includes("cloudy") || text.includes("night");
